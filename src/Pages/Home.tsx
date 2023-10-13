@@ -1,26 +1,55 @@
 import { BsCartPlus } from 'react-icons/bs'
+import { useState, useEffect } from 'react'
+import fetchProducts from '../Api/FetchApi'
+
+interface ProductProps{
+  id: string;
+  title: string;
+  thumbnail: string;
+  price: number;
+}
 
 const Home = () => {
+  const [products, setProducts] = useState<ProductProps[]>([])
+
+  useEffect(() =>{
+    fetchProducts().then((response) => {
+      setProducts(response)
+    });
+  }, [])
+
   return (
     <div>
       <main className='w-full max-w-7xl px-4 mx-auto'>
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5'>
-          <section className='w-full'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5'>
+      
+      {products.map((product) => (
+          
+          <section key={product.id} className='w-full mt-5'>
             <img
-              src="https://cdn.dooca.store/165/products/vbwxopnra7hvvl11krimqjywvrgvrsgiozac_640x640+fill_ffffff.jpg?v=1630957703&webp=0"
+              src={product.thumbnail.replace(/\w\.jpg/gi, 'W.jpg')}
               alt="Logo do Produto"
             />
-            <p className="font-medium mt-1 mb-2">Airpods Pro</p>
 
-            <div className='flex gap-3 items-center'>
-              <strong className='text-zinc-700/90'>
-                R$ 1000
-              </strong>
-              <button className='bg-zinc-900 p-1 rounded'>
-                <BsCartPlus color="#FFF" size={20}/>
-              </button>
+            <div className="ml-8">
+              <p className="text-sm font-medium mt-1 mb-2">{product.title}</p>
+              <div className='flex gap-3 items-center'>
+                <strong className='text-zinc-700/90'>
+                  {product.price.toLocaleString(
+                    'pt-br',{
+                      style: 'currency',
+                      currency: 'BRL'
+                    }
+                  )}
+                </strong>
+                <button className='bg-zinc-900 p-1 rounded'>
+                  <BsCartPlus color="#FFF" size={20}/>
+                </button>
+              </div>
+
             </div>
           </section>
+      ))}
         </div>
       </main>
     </div>
