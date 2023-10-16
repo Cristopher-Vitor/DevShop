@@ -1,33 +1,59 @@
-import React from 'react'
+import { useContext } from "react";
+import { CartContext } from "../Context/CartContext";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
+  const { cart } = useContext(CartContext);
+
   return (
     <div className='w-full max-w-7xl px-4 mx-auto'>
       <h1 className='font-medium text-2xl text-center my-4'>Meu Carrinho</h1>
-      <section className='flex items-center justify-between border-b-2 border-gray-300'>
-        <img
-          src="https://cdn.dooca.store/165/products/vbwxopnra7hvvl11krimqjywvrgvrsgiozac_640x640+fill_ffffff.jpg?v=1630957703&webp=0"
-          alt="Logo do Produto"
-          className='w-28'
-        />
-        <strong>Preço: R$1.000</strong>
-        
-        <div className='flex items-center justify-center gap-2'>
-          <button className='bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center'>
-            -
-          </button>
-          2
-          <button className='bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center'>
-            +
-          </button>
+
+      {cart.length === 0 && (
+        <div className="flex flex-col items-center justify-content">
+          <p className="font-medium">Seu carrinho está vazio.</p>
+          <Link to="/" className="bg-slate-600 my-3 p-1 px-3 text-white font-medium rounded">
+            Acessar Produtos.
+          </Link>
         </div>
+      )}
 
-        <strong>
-          Subtotal: R$ 1.000
-        </strong>
-      </section>
-
-      <p className='mt-4 font-medium'>Total: R$1.000</p>
+        {cart.map((item) => (
+          <section key={item.id} className='flex items-center justify-between border-b-2 border-gray-300'>
+          <img
+            src={item.thumbnail}
+            alt={item.title}
+            className='w-28'
+          />
+          <strong>
+            {item.price.toLocaleString(
+              'pt-br', {
+                style: 'currency',
+                currency: 'BRL'
+              }
+          )}</strong>
+          
+          <div className='flex items-center justify-center gap-2'>
+            <button className='bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center'>
+              -
+            </button>
+            {item.amount}
+            <button className='bg-slate-600 px-2 rounded text-white font-medium flex items-center justify-center'>
+              +
+            </button>
+          </div>
+  
+          <strong>
+            Subtotal: {item.total.toLocaleString(
+              'pt-br',{
+                style: 'currency',
+                currency: 'BRL'
+              }
+            )}
+          </strong>
+        </section>
+        ))}
+      {cart.length != 0 && <p className='mt-4 font-medium'>Total: R$1.000</p>}
     </div>
   )
 }
